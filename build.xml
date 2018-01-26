@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="benchmark-tools" default="default" basedir="." xmlns:if="ant:if" xmlns:unless="ant:unless">
+	<taskdef resource="net/sf/antcontrib/antlib.xml">
+		<classpath>
+			<pathelement location="lib/ant-contrib.jar" />
+		</classpath>
+	</taskdef>
+
+	<property name="dist-dir" value="dist" />
+	<property name="src-dir" value="src/main/java/com/liferay/benchmark/tools/" />
+	<property name="class-dir" value="classes/main/java/com/liferay/benchmark/tools/" />
+	
+	<path id="classPath">
+		<fileset dir="${class-dir}">
+			<include name="*.class"/>
+		</fileset>
+	</path>
+
+	<target name="clean">
+		<delete dir="${class-dir}" quiet="true" />
+		<delete dir="${dist-dir}" quiet="true" />
+	</target>
+	
+	<target name="init">
+		<mkdir dir="${class-dir}" />
+		<mkdir dir="${dist-dir}" />
+	</target>
+	
+	<target name="compile" depends="clean,init">
+		<javac srcdir="${src-dir}"
+         destdir="${class-dir}"
+         source="1.8"
+		/>
+	</target>
+	<target name="jar" depends="clean,init,compile">
+		<jar destfile="${dist-dir}/BenchmarkTool.jar"
+			 basedir="${class-dir}"
+		/>
+	</target>
+	
+	<target name="start" depends="jar">
+		<java classname="com.liferay.benchmark.tools.ReplaceKeyValue">
+			<classpath path="${dist-dir}/BenchmarkTool.jar"/>
+		</java>
+	</target>
+
+</project>
